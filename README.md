@@ -27,6 +27,6 @@
 <div align="center">
    <h1 align="center">NOTICE</h1>
    <p align="center">
-      This mod menu is currently <b>under development</b>, and it is <b>NOT</b> in <b>beta</b> or meant to be used without issues. Any issues or reports will be dismissed, as there are currently no releases intended for anyone to download.
+      h-hi there, pwease notice that this wittle mod menu is stiww undew devewopment x3 it's not weady yet and not meant to be used without any issues. any pwoblems ow weports will be ignored, as there awe no weleases meant fow anyone to downwoad uwu.
    </p>
 </div>

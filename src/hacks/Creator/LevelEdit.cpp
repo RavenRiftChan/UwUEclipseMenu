@@ -14,12 +14,12 @@ namespace eclipse::hacks::Creator {
         void init() override {
             auto tab = gui::MenuTab::find("Creator");
 
-            tab->addToggle("Level Edit", "creator.leveledit")
+            tab->addToggle("wewel edit", "creator.leveledit")
                 ->handleKeybinds()
-                ->setDescription("Allows you to access the level editor from the pause menu in any level.");
+                ->setDescription("awwows u t-to access twe level editor fwom twe pause menu in any l-level.");
         }
 
-        [[nodiscard]] const char* getId() const override { return "Level Edit"; }
+        [[nodiscard]] const char* getId() const override { return "wewel edit"; }
     };
 
     REGISTER_HACK(LevelEdit)
@@ -53,7 +53,7 @@ namespace eclipse::hacks::Creator {
         }
     };
 
-// due to some mysterious reason, this will crash in Debug mode
+// due to sum mystewious reason uhhh dis will cwash in debug mode eugh
 #ifdef NDEBUG
     class $modify(LeveleditLTHook, LevelTools) {
         static void onModify(auto& self) {

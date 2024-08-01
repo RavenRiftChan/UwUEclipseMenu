@@ -1,4 +1,4 @@
-name: build gewode mod
+name: Build Eclipse
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Build Geode Mod
+name: build gewode mod
 
 on:
   workflow_dispatch:
@@ -55,7 +55,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Geode Build
+          name: gewode build
           path: ${{ steps.build.outputs.build-output }}
 
       - name: Download artifacts

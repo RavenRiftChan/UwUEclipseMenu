@@ -12,7 +12,7 @@
 
 namespace eclipse::hacks::Level {
 
-    /// @brief Check whether hitboxes made by RobTop should be drawn. (e.g. in practice mode)
+    /// @brief c-check whetha hitboxes made by robtop should be dwawn -.-' uwu (e.g. in pwactice mode) σωσ
     inline bool robtopHitboxCheck() {
         if (auto* pl = PlayLayer::get())
             return pl->m_isPracticeMode && GameManager::get()->getGameVariable("0166");
@@ -21,7 +21,7 @@ namespace eclipse::hacks::Level {
         return false;
     }
 
-    /// @brief Gracefully disable hitboxes to return to the original state
+    /// @brief gwacefuwwy disable hitboxes t-to return to twe owiginal stateq
     inline void toggleOffHitboxes() {
         if (config::get<bool>("level.showhitboxes", false)) return;
         if (auto* gjbgl = GJBaseGameLayer::get())
@@ -38,7 +38,7 @@ namespace eclipse::hacks::Level {
         void init() override {
             auto tab = gui::MenuTab::find("Level");
 
-            gui::ToggleComponent* toggle = tab->addToggle("Show Hitboxes", "level.showhitboxes")->handleKeybinds();
+            gui::ToggleComponent* toggle = tab->addToggle("show hitboxes senpai", "level.showhitboxes")->handleKeybinds();
 
             toggle->callback([](bool value) {
                 if (PlayLayer::get()) PlayLayer::get()->updateProgressbar();
@@ -62,29 +62,29 @@ namespace eclipse::hacks::Level {
             config::setIfEmpty("level.showhitboxes.other_color", gui::Color::GREEN);
 
             toggle->addOptions([](std::shared_ptr<gui::MenuTab> options) {
-                options->addToggle("Hide Player", "level.showhitboxes.hideplayer");
-                options->addToggle("Hitboxes On Death", "level.showhitboxes.ondeath")->handleKeybinds();
-                options->addToggle("Custom Colors", "level.showhitboxes.customcolors")->addOptions([](std::shared_ptr<gui::MenuTab> optionsColor) {
-                    optionsColor->addColorComponent("Solid Color", "level.showhitboxes.solid_color");
-                    optionsColor->addColorComponent("Danger Color", "level.showhitboxes.danger_color");
-                    optionsColor->addColorComponent("Other Color", "level.showhitboxes.other_color");
-                    optionsColor->addColorComponent("Player Color", "level.showhitboxes.player_color");
-                    optionsColor->addColorComponent("Player Color Inner", "level.showhitboxes.player_color_inner");
-                    optionsColor->addColorComponent("Player Color Rotated", "level.showhitboxes.player_color_rotated");
+                options->addToggle("hide plaaaya", "level.showhitboxes.hideplayer");
+                options->addToggle("h-hitboxes on death", "level.showhitboxes.ondeath")->handleKeybinds();
+                options->addToggle("custom cowlors", "level.showhitboxes.customcolors")->addOptions([](std::shared_ptr<gui::MenuTab> optionsColor) {
+                    optionsColor->addColorComponent("sowlid cowlor uwu", "level.showhitboxes.solid_color");
+                    optionsColor->addColorComponent("danga cowlor", "level.showhitboxes.danger_color");
+                    optionsColor->addColorComponent("otha cowlor", "level.showhitboxes.other_color");
+                    optionsColor->addColorComponent("plaaaya cowlor", "level.showhitboxes.player_color");
+                    optionsColor->addColorComponent("plaaaya cowlor inna", "level.showhitboxes.player_color_inner");
+                    optionsColor->addColorComponent("playa cowlor r-rotated", "level.showhitboxes.player_color_rotated");
                 });
-                options->addInputFloat("Border Size", "level.showhitboxes.bordersize", 0.01f, 10.f, "%.2f");
-                options->addFloatToggle("Fill Alpha", "level.showhitboxes.fillalpha", 0.f, 1.f);
-                options->addFloatToggle("Trail Length", "level.showhitboxes.traillength", 1.f, 2000.f, "%.0f");
+                options->addInputFloat("borda size", "level.showhitboxes.bordersize", 0.01f, 10.f, "%.2f");
+                options->addFloatToggle("fill alpha mya", "level.showhitboxes.fillalpha", 0.f, 1.f);
+                options->addFloatToggle("twail length", "level.showhitboxes.traillength", 1.f, 2000.f, "%.0f");
             });
         }
 
         [[nodiscard]] bool isCheating() override {
             bool enabled = config::get<bool>("level.showhitboxes", false); 
             bool onDeath = config::get<bool>("level.showhitboxes.ondeath", false);
-            if (onDeath) return false; // on-death hitboxes are fine
+            if (onDeath) return false; // on-death hitboxes awe fine òωó
 
             if (auto* pl = PlayLayer::get())
-                // if not in practice with enabled hitboxes
+                // if not in pwactice with enabled hitboxes :3
                 return enabled && !pl->m_isPracticeMode;
             
             return false;
@@ -250,7 +250,7 @@ namespace eclipse::hacks::Level {
         void updateProgressbar() {
             PlayLayer::updateProgressbar();
 
-            // only call updateDebugDraw if it wasn't called yet to prevent overdraw
+            // only call uwpdatedebugdwaw if it w-wasn't cawwed yet to pwevent uvrdwaw >w<
             if (config::get<bool>("level.showhitboxes", false) && !robtopHitboxCheck())
                 PlayLayer::updateDebugDraw();
 
@@ -306,7 +306,7 @@ namespace eclipse::hacks::Level {
         void updateDebugDraw() override {
             auto ptr1 = reinterpret_cast<uintptr_t>(this);
             auto ptr2 = reinterpret_cast<uintptr_t>(LevelEditorLayer::get());
-            // unlock hitboxes in editor even if they are disabled
+            // unlock hitboxes in editor even if theeey awe d-disabled
             if (ptr1 == ptr2) this->m_isDebugDrawEnabled |= config::get<bool>("level.showhitboxes", false);
 
             s_slopeHitboxFix = true;

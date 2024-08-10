@@ -6,8 +6,9 @@
 
 #ifdef GEODE_IS_WINDOWS
 #include <Geode/modify/CCEGLView.hpp>
-#endif
+#else
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
+#endif
 
 using namespace geode::prelude;
 
@@ -414,7 +415,7 @@ namespace eclipse::keybinds {
 
                         if (!keybind.has_value()) return;
 
-                        auto keybindRef = keybind->get();
+                        auto& keybindRef = keybind->get();
 
                         if (key == Keys::None) {
                             config::set(fmt::format("keybind.{}.active", id), false);
@@ -427,6 +428,9 @@ namespace eclipse::keybinds {
 
                     s_keybindComponents[id] = keybindComponent;
                 } else {
+                    // Reset the keybind to None
+                    config::set(fmt::format("keybind.{}.key", id), Keys::None);
+
                     // Remove the keybind from the GUI
                     if (auto keybindComponent = s_keybindComponents[id]; keybindComponent) {
                         tab->removeComponent(keybindComponent);
@@ -442,6 +446,13 @@ namespace eclipse::keybinds {
 
     void Manager::registerKeyPress(Keys key) {
         m_keyStates[key] = true;
+
+        if (config::get<bool>("keybind.in-game-only", false) && !PlayLayer::get()) {
+            // only check if this is the menu toggle keybind
+            if (auto keybind = getKeybind("menu.toggle"); keybind.has_value() && keybind->get().getKey() == key)
+                keybind->get().execute();
+            return;
+        }
 
         for (auto& keybind : m_keybinds) {
             if (keybind.getKey() == key && keybind.isInitialized())
@@ -498,6 +509,9 @@ namespace eclipse::keybinds {
             if (auto keybind = Manager::get()->getKeybind("menu.toggle"); keybind.has_value())
                 keybind->get().setKey(key);
         });
+
+        tab->addToggle("In-game only", "keybind.in-game-only")
+           ->setDescription("Makes keybinds only usable while in a level");
     }
 
 }

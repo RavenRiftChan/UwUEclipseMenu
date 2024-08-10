@@ -53,6 +53,8 @@ namespace eclipse::labels {
         m_variables["babyEmoji"] = rift::Value::string("👶");
 
         // Fetch everything else
+        m_variables["fps"] = rift::Value::floating(0.f);
+        m_variables["realFps"] = rift::Value::floating(0.f);
         refetch();
     }
 
@@ -148,11 +150,7 @@ namespace eclipse::labels {
     static std::string formatTime(int millis) {
         if (millis == 0) return "N/A";
         double seconds = millis / 1000.0;
-        if (seconds < 60.0)
-            return fmt::format("{:.3f}", seconds);
-        int minutes = (int) (seconds / 60.0);
-        seconds -= minutes * 60;
-        return fmt::format("{}:{:06.3f}", minutes, seconds);
+        return utils::formatTime(seconds);
     }
 
     float getFPS() {
@@ -164,11 +162,24 @@ namespace eclipse::labels {
         return static_cast<float>(1'000'000.0 / micros);
     }
 
+    float accumulateFPS(float fps) {
+        static std::deque<float> s_fps;
+        constexpr size_t maxFPS = 100;
+        s_fps.push_back(fps);
+        if (s_fps.size() > maxFPS) s_fps.pop_front();
+        return std::accumulate(s_fps.begin(), s_fps.end(), 0.f) / static_cast<float>(s_fps.size());
+    }
+
+    void VariableManager::updateFPS() {
+        auto fps = getFPS();
+        m_variables["realFps"] = rift::Value::floating(fps);
+        m_variables["fps"] = rift::Value::floating(accumulateFPS(fps));
+    }
+
     void VariableManager::refetch() {
         // Game variables
         auto* gameManager = GameManager::get();
         m_variables["username"] = rift::Value::string(gameManager->m_playerName);
-        m_variables["fps"] = rift::Value::floating(getFPS());
 
         // Hack states (only the important ones)
         m_variables["isCheating"] = rift::Value::boolean(config::getTemp("hasCheats", false));
@@ -213,9 +224,11 @@ namespace eclipse::labels {
 
             // Player
             m_variables["attempt"] = rift::Value::integer(gjbgl->m_attempts);
+            m_variables["isTestMode"] = rift::Value::boolean(gjbgl->m_isTestMode);
             m_variables["isPracticeMode"] = rift::Value::boolean(gjbgl->m_isPracticeMode);
             m_variables["isPlatformer"] = rift::Value::boolean(gjbgl->m_isPlatformer);
             m_variables["levelTime"] = rift::Value::floating(static_cast<float>(gjbgl->m_gameState.m_levelTime));
+            m_variables["time"] = rift::Value::string(utils::formatTime(gjbgl->m_gameState.m_levelTime));
             m_variables["frame"] = rift::Value::integer(static_cast<int>(gjbgl->m_gameState.m_levelTime * 240.f));
             if (auto* pl = gameManager->m_playLayer) {
                 m_variables["editorMode"] = rift::Value::boolean(false);
@@ -240,9 +253,11 @@ namespace eclipse::labels {
             removeVariable("bestTime");
             removeVariable("best");
             removeVariable("attempt");
+            removeVariable("isTestMode");
             removeVariable("isPracticeMode");
             removeVariable("isPlatformer");
             removeVariable("levelTime");
+            removeVariable("time");
             removeVariable("editorMode");
             removeVariable("progress");
             removeVariable("objects");

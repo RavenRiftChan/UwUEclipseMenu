@@ -210,7 +210,7 @@ namespace eclipse::gui::imgui {
             bool toggle = config::get<bool>(floatToggle->getId() + ".toggle", false);
 
             ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.35f);
-            if (ImGui::InputFloat(("##" + floatToggle->getTitle()).c_str(), &value, 0, 0, floatToggle->getFormat().c_str())) {
+            if (ImGui::InputFloat(fmt::format("##{}", floatToggle->getTitle()).c_str(), &value, 0, 0, floatToggle->getFormat().c_str())) {
                 value = std::clamp(value, floatToggle->getMin(), floatToggle->getMax());
                 config::set(floatToggle->getId(), value);
                 floatToggle->triggerCallback(value);
@@ -235,7 +235,7 @@ namespace eclipse::gui::imgui {
 
             if (ImGui::Button(floatToggle->getTitle().c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0))) {
                 toggle = !toggle;
-                config::set(floatToggle->getId() + ".toggle", toggle);
+                config::set(fmt::format("{}.toggle", floatToggle->getId()), toggle);
                 floatToggle->triggerCallback();
             }
             handleTooltip(floatToggle->getDescription());
@@ -367,6 +367,35 @@ namespace eclipse::gui::imgui {
             handleTooltip(button->getDescription());
 
             ImGui::PopStyleColor(3);
+
+            if (button->hasKeybind()) {
+                // Open context menu on either Right click or Shift+Click
+                auto id = fmt::format("##context-menu-btn-{}", button->getId());
+                if (ImGui::IsItemClicked(1) || (ImGui::IsItemClicked(0) && ImGui::GetIO().KeyShift)) {
+                    ImGui::OpenPopup(id.c_str());
+                }
+
+                if (ImGui::BeginPopup(id.c_str())) {
+                    auto keybinds = keybinds::Manager::get();
+                    auto specialId = fmt::format("button.{}", button->getId());
+                    auto keybind = keybinds->getKeybind(specialId);
+
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
+
+                    if (keybind.has_value()) {
+                        auto& keybindRef = keybind->get();
+
+                        if (!keybindRef.isInitialized() && ImGui::MenuItem("Add keybind")) {
+                            keybinds->setKeybindState(specialId, true);
+                        } else if (keybindRef.isInitialized() && ImGui::MenuItem("Remove keybind")) {
+                            keybinds->setKeybindState(specialId, false);
+                        }
+                    }
+                    ImGui::PopStyleColor();
+
+                    ImGui::EndPopup();
+                }
+            }
 
             // Draw two lines
             bool isMouseOver = ImGui::IsItemHovered();
